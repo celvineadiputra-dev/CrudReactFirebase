@@ -8,6 +8,7 @@ export default function ContactForm(props) {
         email: ""
     };
     let [values, setValues] = useState(initialFormValues);
+    let [buttonName, setButtonName] = useState('Save');
 
     const handleInputChange = e => {
         let {name, value} = e.target;
@@ -17,14 +18,21 @@ export default function ContactForm(props) {
         });
     }
 
+    useEffect(() => {
+        console.log(props.currentId);
+        if(props.currentId === '' || props.currentId === undefined){
+            setValues({...initialFormValues})
+            setButtonName('Save')
+        }
+        else{
+            setValues({ ...props.contactObject[props.currentId] })
+            setButtonName('Update')
+        }
+    }, [props.currentId, props.contactObject])
+
     const handleFormSubmit = e =>{
         e.preventDefault();
         props.addOrEdit(values);
-        setValues({
-            fullName: "",
-            mobilePhone: "",
-            email: ""
-        })
     }
 
     return (
@@ -43,7 +51,7 @@ export default function ContactForm(props) {
                     <input type="mail" name="email" className="form-control" placeholder="Email" value={values.email} onChange={handleInputChange}/>
                 </div>
                 <div className="form-group mb-4">
-                    <button type="submit" className="btn btn-primary" name="save">Save</button>
+                    <button type="submit" className="btn btn-primary" name="save">{buttonName}</button>
                 </div>
             </form>
         </BaseLayout>
